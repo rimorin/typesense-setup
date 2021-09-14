@@ -65,6 +65,10 @@ curl "http://localhost:8108/collections" \
 
 ## Create alias
 
+Typesense alias are virtual names that points to the actual collection name. 
+
+Useful when you need to reindex a new collection without disrupting the collection in production.
+
 ```shell script
 curl "http://localhost:8108/aliases/alias_name_here" -X PUT \
     -H "Content-Type: application/json" \
@@ -78,7 +82,7 @@ curl "http://localhost:8108/aliases/alias_name_here" -X PUT \
 ```shell script
 curl "http://localhost:8108/collections/products_01/documents?action=upsert" -X POST \
         -H "Content-Type: application/json" \
-        -H "X-TYPESENSE-API-KEY: ${TYPESENSE_KEY}" \
+        -H "X-TYPESENSE-API-KEY: ${TYPESENSE_API_KEY}" \
         -d '{
           "id": "124",
           "name": "Stark X1",
@@ -104,6 +108,11 @@ curl -H "X-TYPESENSE-API-KEY: ${TYPESENSE_API_KEY}" \
 ```
 
 ## Backup Typesense
+
+As indexed data are in-memory, it is important to perform regular snapshots of the current engine state to prevent total lost of your data in the event of a server failure.
+
+Typically, snapshots should be stored in a secured location that will not be affected by any downtime.
+In the case of a server failure, once Typesense is back online, it will automatically detect for any snapshot based on the data-directory configured and restore them.
 
 ```shell script
 curl "http://localhost:8108/operations/snapshot?snapshot_path=/data/typesense-data" -X POST \
